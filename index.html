@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>LizChat</title>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+<meta name="description" content="LizChat - мессенджер! Общайтесь, лайкайте посты, создавайте посты, пишите друг другу абсолютно бесплатно!">
+<meta name="robots" content="index, follow">
+<meta name="google-site-verification" content="UtqtUoOvoH4DeGXkcMlDqUDogGZBFmHiH0I6iNobzlY" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        #jc {
+            background: rgb(203, 213, 225);
+            text-align: center;
+            justify-content: center;
+            border-radius: 13px;
+            height: 50vh;
+            display: none;
+        }
+        .bc {
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+    margin: 4px 8px;
+    border: none;
+    border-radius: 12px;
+    background: #ffffff;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    width: 100%;
+    text-align: left;
+    gap: 12px;
+}
+body {
+    background: #ffffbf;
+}
+#chat {
+    height: 45vh;
+    weight: 100%;
+    overflow: hidden;
+    flex: 1; overflow-y: auto; padding: 10px; display: flex; flex-direction: column;
+}
+.message { background: lightgreen; align-self: flex-end; margin: 10px 0; padding: 10px; border-radius: 10px; 
+ animation: fadeIn 0.3s ease-out;
+  padding: 12px 16px;
+            margin: 8px 0;
+            max-width: 80%;
+            line-height: 1.5;
+            border-radius: 18px;
+            clear: both;
+            position: relative;
+}
+.btn {
+    background: #00ffea;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    text-align: center;
+    border-radius: 12px;
+    user-select: none;
+}
+.b {
+  display: inline-block;
+  text-decoration: none;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+ .mmmm {
+            background: rgb(203, 213, 225);
+            border: none;
+            margin-bottom: 3%;
+        }
+        .mmm {
+            background: rgb(203, 231, 225);
+        }
+        .nb {
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            border-radius: 7px;
+            cursor: pointer;
+            border: none;
+            margin: 1%;
+            padding: 3%;
+        }
+        #ynau {
+            font-size: 150%;
+        }
+        .cn {
+            border-radius: 13px;
+            width: 30%;
+            height: 4vh;
+            background: #5000ff;
+            font-size: 70%;
+            color: white;
+            text-align: center;
+        }
+        #chat-all {
+            display: none;
+        }
+        .m { background: #40cbff; align-self: flex-start; color: #003366; margin: 10px 0; padding: 10px; border-radius: 10px; max-width: 80%; 
+ animation: fadeIn 0.3s ease-out;
+  padding: 12px 16px;
+            margin: 8px 0;
+            max-width: 80%;
+            line-height: 1.5;
+            border-radius: 18px;
+            clear: both;
+            position: relative;}
+            .post-line {
+    background: #00ffea;
+    color: black;
+    border-radius: 13px;
+}
+.post-line button {
+    background: #00ffea;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    text-align: center;
+    border-radius: 12px;
+    user-select: none;
+}
+.author {
+    margin-left: 2.3%;
+    background: lightgreen;
+    color: black;
+    border-radius: 3px;
+    padding: 1%;
+    font-size: 110%;
+}
+#see {
+    width: 100%;
+    height: 50vh;
+    //border: 1px solid black;
+    border-radius: 4px;
+    overflow: hidden;
+    flex: 1; overflow-y: auto; padding: 10px; display: flex; flex-direction: column;
+    position: relative;
+}
+.post {
+    margin-bottom: 7%;
+    color: black;
+    border-radius: 7px;
+    transition: transform 0.3s ease;
+}
+.like-count {
+    margin-left: 2%;
+}
+#cr {
+    display: none;
+}
+#lall {
+    display: none;
+}
+.card {
+  background: #ffe795;
+  border-radius: 12px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+}
+
+.card img {
+  transition: transform 0.3s ease;
+}
+
+.card:hover img {
+  transform: scale(1.05);
+}
+    </style>
+</head>
+<body>
+    <div id="all">
+        <h2 style="font-size: 150%; text-align: center;">LizChat <span class="cn">BETA</span></h2>
+    <div id="chats">
+        <div id="base-chats">
+            <button class="bc" onclick="oc('Служба поддержки')">Служба поддержки</button>
+        </div>
+    </div>
+    <button class="nb mmmm" onclick="newchat()">Открыть чат по ID</button>
+    <button class="nb mmmm" onclick="eid()">QR-код на Vision</button>
+    <button class="nb mmmm" onclick="myid()">Мой ID</button>
+    <button class="nb mmmm" onclick="lenta()">Лента</button>
+    <div id="chat-all">
+        <h2 id="name" style="background: lightgreen;">Имя</h2>
+        <div id="chat"></div>
+        <input id="mail-input" placeholder="Введите сообщение..." size="26" class="b">
+        <button class="btn" onclick="mail(mu.value.trim())">Отправить</button>
+        <button class="btn video" onclick="mailc();">🎥</button>
+    </div>
+    </div>
+    <div id="lall">
+                <h2>Лента</h2>
+                <button class="nb mmmm" style="width: 40%;" onclick="elenta()">← Назад</button>
+        <button class="nb mmmm" style="width: 40%;" onclick="create()">Написать пост</button>
+        <h3>Рандомный пост</h3>
+        <div id="rpost"></div>
+        <button class="nb mmmm" style="width: 40%;" onclick="rpost()">Поменять</button>
+        <div id="cr">
+        <h2>Написать пост</h2>
+        <input type="file" accept="image/*" class="mmmm" id="php">
+        <textarea id="textp" placeholder="Пишите..."></textarea>
+        <br>
+        <button class="nb mmmm" style="width: 40%;" onclick="viewp()">Выложить</button>
+        <button class="nb mmmm" style="width: 40%;" onclick="cps()">Закрыть</button>
+    </div>
+    <div id="see">
+        <div id="lenta">
+            <!-- posts -->
+        </div>
+    </div>
+    </div>
+    <div id="jc">
+        <h2 style="font-size: 150%;">Регистрация в LizChat <span class="cn">BETA</span></h2>
+<input class="mmmm" name="content" placeholder="Имя"></input><br>
+<input class="mmmm" name="content" placeholder="Email"></input><br>
+<input class="mmmm" type="password" name="content" placeholder="Пароль"><br>
+<strong>Разрешаете ли Вы совершенно не использовать выше введёные данные?</strong>
+<div id="ynau">Да</div>
+<button class="nb mmm" onclick="raud_yn()">Перекрутить</button>
+<button class="nb mmm" onclick="over_yn()">Продолжить</button>
+</form>
+    </div>
+    <script>
+        // init
+        mu = document.getElementById("mail-input");
+        chat = document.getElementById("chat");
+        chatalls = document.getElementById("chat-all");
+        cname = document.getElementById("name");
+        all = document.getElementById("all");
+        o = "";
+        if(localStorage.getItem("reg-do") != 1) raud();
+        // firebase
+const firebaseConfig = {
+  apiKey: "AIzaSyD9Tn65QqysCflH_kXFPHclx_yuv7MDiF8",
+  authDomain: "lizchat-debc5.firebaseapp.com",
+  projectId: "lizchat-debc5",
+  storageBucket: "lizchat-debc5.firebasestorage.app",
+  messagingSenderId: "606867132424",
+  appId: "1:606867132424:web:c5d1fa4650175beb2ac1bd"
+};
+const app = firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore(); 
+// берём ID юзеров
+function getChatId(user1, user2) {
+    return [user1, user2].sort().join("_");
+}
+// отправка в firebase
+async function send(messageText) {
+    if (!messageText) return;
+    const myId = localStorage.getItem("lizchat_username") || "Аноним";
+    if (!o) return;
+    const chatKey = "chat-" + o;
+    let seenIds = new Set(JSON.parse(localStorage.getItem(chatKey + "-seen") || "[]"));
+    const el = document.createElement("div");
+    el.className = "message";
+    el.textContent = messageText;
+    chat.appendChild(el);
+    el.scrollIntoView({ behavior: "smooth" });
+    localStorage.setItem(chatKey, chat.innerHTML);
+    try {
+        const tempId = "temp-" + Date.now() + "-" + Math.random();
+        seenIds.add(tempId);
+        localStorage.setItem(chatKey + "-seen", JSON.stringify([...seenIds]));
+        const docRef = await db.collection("chats").doc(o).collection("messages").add({
+            text: messageText,
+            sender: myId,
+            timestamp: new Date()
+        });
+        seenIds.delete(tempId);
+        seenIds.add(docRef.id);
+        localStorage.setItem(chatKey + "-seen", JSON.stringify([...seenIds]));
+        console.log("Ошибок в отправке нет.");
+    } catch (error) {
+        console.error("Ошибка:", error);
+    }
+}
+const myId = localStorage.getItem("lizchat_username") || "Аноним";
+if(myId == "246390476138") {document.body.innerHTML = "";}
+// слушать 
+function listenChat(chatId) {
+    const myId = localStorage.getItem("lizchat_username") || "Аноним";
+    const chatKey = "chat-" + chatId;
+    let seenIds = new Set(JSON.parse(localStorage.getItem(chatKey + "-seen") || "[]"));
+    db.collection("chats").doc(chatId).collection("messages")
+      .orderBy("timestamp")
+      .onSnapshot(snapshot => {
+        snapshot.docChanges().forEach(change => {
+            if (change.type !== "added") return;
+            const docId = change.doc.id;
+            if (seenIds.has(docId)) return;
+            seenIds.add(docId);
+            localStorage.setItem(chatKey + "-seen", JSON.stringify([...seenIds]));
+            const data = change.doc.data();
+            if (data.sender === myId) return; 
+            const el = document.createElement("div");
+            el.className = "m"; 
+            el.textContent = data.sender + ": " + data.text;
+            chat.appendChild(el);
+            el.scrollIntoView({ behavior: "smooth" });
+        });
+    });
+}
+// рандом
+function re(array) {
+    return array[Math.floor(Math.random() * array.length)];
+}
+// лайки
+async function addlike(id) {
+l=localStorage.getItem("LizChat-likes");
+if(l) {
+ls=l.split(",");
+if(ls.includes(id)) return;
+}
+await db.collection("lenta").doc(id).update({
+            likes: firebase.firestore.FieldValue.increment(1)
+        });
+       localStorage.setItem("LizChat-likes",l+","+id);
+       loadposts();
+     }
+// загрузка ленты 
+async function loadposts() {
+    try {
+        const lenta = document.getElementById("lenta");
+        const posts = await db.collection("lenta")
+            .orderBy("likes", "desc")
+            .orderBy("timestamp", "desc")
+            .limit(50)
+            .get();
+        lenta.innerHTML = "";
+        id = localStorage.getItem("lizchat_username") || "Аноним";
+        posts.forEach(doc => {
+            const postt = doc.data();
+            const post = document.createElement("div");
+            post.className = "post";
+            post.id = "post-" + doc.id;
+            if(postt.text.includes("/image")) {
+                postt.text = `<img src="`+postt.text.replace("/image","")+'" width="300" height="300">'
+            }
+            if(postt.sender == id) postt.sender = "Вы";
+            post.innerHTML = `
+            <div class="card">
+                <div class="post">
+                    <div style="display: flex;">
+                    <img src="https://s1.radikal.cloud/2026/01/09/1000020341649fe99135ba5f84.png" style="border-radius: 50%; width: 10%; height: 5vh;">
+                    <div class="author">${postt.sender}</div>
+                    </div>
+                </div>
+                <div style="">${postt.text}</div>
+                <div style="color: grey;">🕒${new Date(postt.timestamp.seconds * 1000).toLocaleString()} ♥️${postt.likes} <button onclick="addlike('${doc.id}')">♥️</button></div>
+                <div class="post-line" style="color: grey; text-align: center;">
+                    Все посты защищены авторским правом.
+                </div>
+                </div>
+            `;
+            lenta.appendChild(post);
+        });
+    } catch(e) {
+        console.error("Ошибка:", e);
+    }
+}
+loadposts(); // первая загрузка 
+setInterval(
+() => {
+loadposts();
+},5000);
+// рандомный пост
+async function rpost() {
+    const posts = await db.collection("lenta")
+            .where("likes", ">=", 2)
+            .orderBy("likes", "desc")
+            .orderBy("timestamp", "desc")
+            .limit(50)
+            .get();
+    if(posts.empty) return;
+    post = re(posts.docs);
+    postt = post.data();
+    if(postt.text.includes("/image")) {
+                postt.text = `<img src="`+postt.text.replace("/image","")+'" width="300" height="300">'
+            }
+    document.getElementById("rpost").innerHTML = `
+    <div class="card">
+                <div class="post">
+                    <div style="display: flex;">
+                    <img src="https://s1.radikal.cloud/2026/01/09/1000020341649fe99135ba5f84.png" style="border-radius: 50%; width: 10%; height: 5vh;">
+                    <div class="author">${postt.sender}</div>
+                    </div>
+                <div style="">${postt.text}</div>
+                <div style="color: grey;">🕒${new Date(postt.timestamp.seconds * 1000).toLocaleString()} ♥️${postt.likes} <button onclick="addlike('${post.id}')">♥️</button></div>
+                <div class="post-line" style="color: grey; text-align: center;">
+                    Все посты защищены авторским правом.
+                </div>
+                </div>
+                </div>
+            `;
+}
+rpost();
+        function myid() {
+            id=localStorage.getItem("lizchat_username");
+            oc("Служба поддержки");
+            mailb("Ваш ID: "+id);
+        }
+        function eid() {
+        oc("Служба поддержки");
+            m='<img src="https://radika1.link/2025/12/27/1000019032abda4284b17d4264.png" alt="1000019032" border="0">';
+            e = document.createElement("img");
+            e.className = "m";
+             e.src="https://radika1.link/2025/12/27/1000019032abda4284b17d4264.png";
+            e.alt="QR-код на Vision";
+            chat.appendChild(e);
+            e.scrollIntoView({ behavior: "smooth" });
+            chatContent = chat.innerHTML;
+            chatContentAll = chatContent;
+            localStorage.setItem("chat-"+o, chatContentAll);
+        }
+        function oc(n) {
+        chatalls.style.display="block";
+            chat.scrollTop = chat.scrollHeight;
+            cname.textContent = n;
+            o = n;
+            chatContent = localStorage.getItem("chat-"+o) || "";
+            chat.innerHTML = chatContent;
+            if(chat.innerHTML) {
+                chat.lastElementChild.scrollIntoView({behavior: "smooth", block: "end"}); // прокрутка
+            }
+            listenChat(o);
+            window.addEventListener("load", () => {
+  mu = document.getElementById("mail-input");
+  mu.focus();
+});
+        }
+        function mailb(m) {
+            if(!m) return;
+            e = document.createElement("div");
+            e.className = "m";
+            e.textContent = m;
+            chat.appendChild(e);
+            e.scrollIntoView({ behavior: "smooth" });
+            chatContent = chat.innerHTML;
+            chatContentAll = chatContent;
+            localStorage.setItem("chat-"+o, chatContentAll);
+        }
+        function newchat() {
+    const myId = localStorage.getItem("lizchat_username") || "Аноним";
+    const toId = prompt("Введите ID собеседника:");
+    if (!toId) return;
+    const chatId = getChatId(myId, toId);
+    o = chatId; // текущий чат
+    cname.textContent = "Чат с " + toId;
+    db.collection("chats").doc(chatId).set({ created: new Date() }, { merge: true });
+    db.collection("users").doc(myId).set({ chats: firebase.firestore.FieldValue.arrayUnion(chatId) }, { merge: true });
+    db.collection("users").doc(toId).set({ chats: firebase.firestore.FieldValue.arrayUnion(chatId) }, { merge: true });
+    listenChat(o);
+    chat.innerHTML = localStorage.getItem("chat-" + o) || "";
+    chatalls.style.display="block";
+            chat.scrollTop = chat.scrollHeight;
+}
+function lenta() {
+    jc = document.getElementById("lall");
+            all.style.display="none";
+            jc.style.display="block";
+}
+function elenta() {
+    jc = document.getElementById("lall");
+            all.style.display="block";
+            jc.style.display="none";
+}
+function create() {
+    jc = document.getElementById("cr");
+            all.style.display="none";
+            jc.style.display="block";
+}
+function cps() {
+    jc = document.getElementById("cr");
+            jc.style.display="none";
+}
+function convertToBase64(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = error => reject(error);
+    });
+}
+async function tklikes() {
+    const docRef = await db.collection("lenta").add({
+            text: "Testing",
+            sender: "Test Account",
+            timestamp: new Date(),
+            likes: 1000
+        });
+        loadposts();
+}
+async function viewp() {
+text=document.getElementById("textp").value;
+filei = document.getElementById("php");
+const file = filei.files[0];
+if(text.includes("<")) {
+document.body.innerHTML = "ПРОКЛЯТЫЙ ЗАСРАНЫЙ ТУПОЙ НЕУКЛЮЖЫЙ ЮЗЕР, Я ДАЖЕ ПИСАТЬ ДЛЯ ТЕБЯ ТЕКСТ НЕ СТОРАЮСЬ!!! ВСЁ, ИДИОТ, ТЫ ТУПОЙ НАВСЕГДА!!!"; return}
+if(!text && !file) return;
+if (file && file.size > 1024 * 1024) {
+alert("Максиум 1 мб.")
+}
+if(file) {
+    if(text) {
+        alert("Невозможно выложить изображение с текстом.")
+    }
+    i = await convertToBase64(file);
+    text = "/image" + i;
+}
+else {
+    if(text.includes("/image")) {
+        alert ("/image - системная переменная. Удалите её из текста.")
+    }
+}
+const myId = localStorage.getItem("lizchat_username") || "Аноним";
+try {
+    const docRef = await db.collection("lenta").add({
+            text: text,
+            sender: myId,
+            timestamp: new Date(),
+            likes: 0
+        });
+        console.log("Ошибок нет.");
+        loadposts();
+}
+catch(e) {
+    console.log(e);
+}
+}
+        function mail(m) {
+if(!m) return;
+ if(m.length > 500) return;
+            send(m,o);//отправить
+            if(o == "Служба поддержки" && m == "/bot") {
+    mailb("Используйте рандомный ID для своего бота, или используйте данный: "+Math.floor(Math.random() * 1000000000000),o);
+}
+}
+        function mailc() {
+            e = document.createElement("video");
+            e.width="300";
+            e.height="150";
+            e.className = "message video";
+            e.autoplay = true;
+        e.muted = true;
+            chat.appendChild(e);
+            e.scrollIntoView({ behavior: "smooth" });
+            camera(e);
+            chatContent = chat.innerHTML;
+            chatContentAll = chatContent;
+            localStorage.setItem("chat-"+o, chatContentAll);
+        }
+        function over_yn() {
+        localStorage.setItem("lizchat_username", Math.floor(Math.random() * 1000000000000));
+            localStorage.setItem("reg-do",1);
+            all.style.display="block";
+            jc.style.display="none";
+        }
+        function raud_yn() {
+            ynau = document.getElementById("ynau");
+            yn="Да";
+            i=0;
+            slp=7200;
+            slpp=0;
+            while(i<=21) {
+                slp-=300;
+                if(yn=="Да") {
+                    setTimeout(()=>{ynau.textContent="Нет"},slp);
+                    yn="Нет";
+                }
+                else if(yn=="Нет") {
+                    setTimeout(()=>{ynau.textContent="Да"},slp);
+                    yn="Да";
+                }
+                i++;
+            }
+            setTimeout(()=>{ynau.textContent="Да";},7500)
+        }
+        function raud() {
+        jc = document.getElementById("jc");
+            all.style.display="none";
+            jc.style.display="block";
+            raud_yn();
+        }
+        async function camera(e) {
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({ 
+                    video: true
+                });
+                e.srcObject = stream;
+            } catch (err) {
+                console.error(err);
+            }
+        }
+        /*
+        const video = document.querySelectorAll('.video');
+video.forEach(e => {
+camera(e);
+});
+*/
+// иниализируем переменные
+let unsubscribe = null;
+let lastTimestamp = null
+    </script>
+</body>
+</html>
+<!-- 
+
+
+
+
+
+
+
+
+
+
+
+
+
+ -->
