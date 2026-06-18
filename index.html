@@ -305,6 +305,7 @@ a {
         cname = document.getElementById("name");
         all = document.getElementById("all");
         o = "";
+        let zkr="Написал обнову. Кто в сети?";
         if(localStorage.getItem("reg-do") != 1) raud();
         // firebase
 const firebaseConfig = {
@@ -439,6 +440,9 @@ async function loadposts() {
             likes = parseInt(postt.likes) || 0;
             likes = formatlikes(likes);
             if(postt.sender == id) postt.sender = "Вы";
+            if("gyhehhdjdhrdsuzuhssuhsgshdhshs".includes(postt.text)) {
+                zkr=postt.text;
+            }
             post.innerHTML = `
             <div class="card">
                 <div class="post">
@@ -481,6 +485,7 @@ async function rpost() {
             }
     likes = parseInt(postt.likes) || 0;
     likes = formatlikes(likes);
+    zkr.replace("gyhehhdjdhrdsuzuhssuhsgshdhshs","");
     document.getElementById("rpost").innerHTML = `
     <div class="card">
                 <div class="post">
@@ -489,12 +494,33 @@ async function rpost() {
                     <div class="author">${postt.sender}</div>
                     </div>
                 <div style="">${postt.text}</div>
-                <div style="color: grey;">🕒${new Date(postt.timestamp.seconds * 1000).toLocaleString()} <button onclick="addlike('${post.id}')">♥️${likes}</button></div>
+                <div style="color: grey;">🕒${new Date(postt.timestamp.seconds * 1000).toLocaleString()} <button onclick="addlike('${post.id}')" class="likes">♥️${likes}</button></div>
                 <div class="post-line" style="color: grey; text-align: center;">
                     Все посты защищены авторским правом.
                 </div>
                 </div>
                 </div>
+                
+                
+                
+                <h3>Закреплено от админа(Vision): </h3>
+                <div class="card">
+                <div class="post">
+                    <div style="display: flex;">
+                    <img src="https://s1.radikal.cloud/2026/01/09/1000020341649fe99135ba5f84.png" style="border-radius: 50%; width: 10%; height: 5vh;">
+                    <div class="author">Vision(Админ)</div>
+                    </div>
+                <div style="">${zkr}</div>
+                <div style="color: grey;">🕒${new Date(postt.timestamp.seconds * 1000).toLocaleString()} <button onclick="addlike('${post.id}')" class="likes">♥️1M</button></div>
+                <div class="post-line" style="color: grey; text-align: center;">
+                    Пост от админа!
+                </div>
+                </div>
+                </div>
+                
+                
+               
+               
             `;
 }
 rpost();
