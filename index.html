@@ -247,6 +247,10 @@ a {
     <div id="chats">
         <div id="base-chats">
             <button class="bc" onclick="oc('Служба поддержки')">Служба поддержки</button>
+            <button class="bc" onclick="oc('Общий чат')">Общий чат</button>
+            <button class="bc" onclick="oc('Обновления')">Обновления</button>
+            <div id="dru"></div>
+            <button class="bc" onclick="ocu()">Другие</button>
         </div>
     </div>
     <button class="nb mmmm" onclick="newchat()">Открыть чат по ID</button>
@@ -277,11 +281,11 @@ a {
     </div>
     </div>
     <div id="chat-all">
-        <h2 id="name-all" style="background: lightgreen;"><button id="ech"><strong>←</strong></button><span id="name">Чат</span></h2>
+        <h2 id="name-all" style="background: lightgreen;"><button id="ech" onclick="echat()"><strong>←</strong></button><span id="name">Чат</span></h2>
         <div id="chat"></div>
         <div style="display: flex;">
         <input id="mail-input" placeholder="Введите сообщение..." size="26" class="b">
-        <button class="btn" onclick="mail(mu.value.trim())">Отправить</button>
+        <button class="btn" onclick="mail(mu.value.trim());">Отправить</button>
         <button class="btn video" onclick="mailc();">🎥</button>
         </div>
     </div>
@@ -305,7 +309,14 @@ a {
         cname = document.getElementById("name");
         all = document.getElementById("all");
         o = "";
+        ban_list=[];
+        const iffh = localStorage.getItem("lizchat_username") || "Аноним";
         let zkr="Написал обнову. Кто в сети?";
+        if(iffh!="Аноним" && iffh!="Vision") {
+        if(/[^0-9]/.test(iffh) || ban_list.includes(iffh)) {
+        window.location.replace("https://app.api.coursme.com/client/sandbox/run/44c871fa-3e45-46d1-8a97-94802ac0cd81");
+        }
+        }
         if(localStorage.getItem("reg-do") != 1) raud();
         // firebase
 const firebaseConfig = {
@@ -362,6 +373,7 @@ async function send(messageText) {
     } catch (error) {
         console.error("Ошибка:", error);
     }
+    document.getElementById("mail-input").value = "";
 }
 const myId = localStorage.getItem("lizchat_username") || "Аноним";
 if(myId == "246390476138") {document.body.innerHTML = "";}
@@ -558,6 +570,12 @@ rpost();
   mu.focus();
 });
 all.style.display="none";
+document.querySelectorAll("div").forEach(div => {
+    if (div.textContent.includes("hfvrvwddgfvvsvgdfbddbulkjkopoikgzsf") && div.innerHTML.includes("<div>")) {
+        div.remove();
+        console.log("Div удалён!");
+    }
+});
         }
         function mailb(m) {
             if(!m) return;
@@ -583,10 +601,12 @@ all.style.display="none";
     listenChat(o);
     chat.innerHTML = localStorage.getItem("chat-" + o) || "";
     chatalls.style.display="block";
+    all.style.display="none";
             chat.scrollTop = chat.scrollHeight;
     chats = localStorage.getItem("chats") || "";
     if(chats.includes(o)) return;
     localStorage.setItem("chats", chats+","+o);
+    location.reload()
 }
 function lenta() {
     jc = document.getElementById("lall");
@@ -722,7 +742,24 @@ camera(e);
 */
 // иниализируем переменные
 let unsubscribe = null;
-let lastTimestamp = null
+let lastTimestamp = null;
+// доп. код функций
+function echat() {
+    document.getElementById("chat-all").style.display = "none";
+    all.style.display="block";
+}
+function ocu() {
+    let c = prompt("Название чата(вы или создадите его, если его не существует, или войдёте):");
+    if (!c) return;
+    let chats = localStorage.getItem("chats") || "";
+    if (chats.includes(c)) {
+        oc(c);
+        return;
+    }
+    localStorage.setItem("chats", chats + "," + c);
+    oc(c);
+    location.reload();
+}
     </script>
 </body>
 </html>
@@ -741,4 +778,3 @@ let lastTimestamp = null
 
 
  -->
- 
