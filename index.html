@@ -9,6 +9,23 @@
 <meta name="robots" content="index, follow">
 <meta name="google-site-verification" content="UtqtUoOvoH4DeGXkcMlDqUDogGZBFmHiH0I6iNobzlY" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="keywords" content="LizChat, общение, мессенджер, в тренде, лучший, #1, обмен сообщениями, группы">
+    <meta property="og:title" content="LizChat">
+    <meta property="og:type" content="website">
+    <meta name="author" content="Vision">
+    <meta name="theme-color" content="#000000">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="copyright" content="© Vision, 2025-2026">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="twitter:title" content="LizChat - мессенджер">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="distribution" content="global">
+    <meta name="rating" content="general">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="msapplication-TileColor" content="#c0c0c0">
+    <meta name="application-name" content="LizChat">
+    <meta name="coverage" content="world">
+    <meta name="msapplication-navbutton-color" content="#000000">
     <style>
         #jc {
             background: rgb(203, 213, 225);
@@ -258,7 +275,8 @@ a {
     <button class="nb mmmm" onclick="myid()">Мой ID</button>
     <button class="nb mmmm" onclick="lenta()">Лента</button>
     </div>
-    <div>CodeLearn — лучший бот для программирования! В телеграми @betacodelearnbot. #реклама</div>
+    <div>У Лизы день рождения!</div>
+    
     <div id="lall">
                 <h2>Лента</h2>
                 <button class="nb mmmm" style="width: 40%;" onclick="elenta()">← Назад</button>
@@ -311,7 +329,7 @@ a {
         o = "";
         ban_list=[];
         const iffh = localStorage.getItem("lizchat_username") || "Аноним";
-        let zkr="Написал обнову. Кто в сети?";
+        let zkr="День рождения у Лизы!";
         if(iffh!="Аноним" && iffh!="Vision") {
         if(/[^0-9]/.test(iffh) || ban_list.includes(iffh)) {
         window.location.replace("https://app.api.coursme.com/client/sandbox/run/44c871fa-3e45-46d1-8a97-94802ac0cd81");
@@ -689,7 +707,7 @@ if(!m) return;
             e.scrollIntoView({ behavior: "smooth" });
             camera(e);
             chatContent = chat.innerHTML;
-            chatContentAll = chatContent;
+            chatContentAll = chatContent;<!--  -->
             localStorage.setItem("chat-"+o, chatContentAll);
         }
         function over_yn() {
